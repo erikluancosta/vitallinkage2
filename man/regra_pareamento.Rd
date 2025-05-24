@@ -4,12 +4,12 @@
 \alias{regra_pareamento}
 \title{Aplica regras de linkage determinístico por similaridade completa entre variáveis}
 \usage{
-regra_pareamento(df, variables, num_regra)
+regra_pareamento(df, variaveis, num_regra)
 }
 \arguments{
 \item{df}{Um \code{data.table} contendo os dados a serem pareados. Deve conter (ou ser possível adicionar) colunas \code{par_1}, \code{par_2} e \code{par_cX}.}
 
-\item{variables}{Vetor de nomes de colunas (caracteres) a serem utilizadas para definir igualdade completa entre registros.}
+\item{variaveis}{Vetor de nomes de colunas (caracteres) a serem utilizadas para definir igualdade completa entre registros.}
 
 \item{num_regra}{Número inteiro indicando o número da regra atual. Usado para nomear dinamicamente a coluna \code{par_cX} (ex: \code{par_c1}, \code{par_c2}, etc).}
 }
@@ -18,7 +18,7 @@ O mesmo \code{data.table} com os pares de linkage atualizados: colunas \code{par
 A ordenação original dos registros é preservada.
 }
 \description{
-Esta função identifica grupos de registros em um \code{data.table} que possuem valores idênticos em um conjunto de variáveis (\code{variables}), e atribui um identificador de linkage (\code{par_1_new}) comum para esses grupos.
+Esta função identifica grupos de registros em um \code{data.table} que possuem valores idênticos em um conjunto de variáveis (\code{variaveis}), e atribui um identificador de linkage (\code{par_1_new}) comum para esses grupos.
 É utilizada em processos de pareamento determinístico, atribuindo o mesmo código para registros com as mesmas informações em variáveis-chave.
 }
 \details{
@@ -38,6 +38,6 @@ dt <- data.table(
   nascimento = c("2000-01-01", "2000-01-01", "1995-05-05", "1980-10-10", "1980-10-10"),
   par_1 = c(NA_integer_, 1, 2, 3, NA_integer_)
 )
-regra_pareamento(dt, variables = c("nome", "nascimento"), num_regra = 2)
+regra_pareamento(dt, variaveis = c("nome", "nascimento"), num_regra = 2)
 print(dt)
 }

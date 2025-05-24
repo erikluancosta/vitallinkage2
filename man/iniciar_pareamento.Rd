@@ -4,12 +4,12 @@
 \alias{iniciar_pareamento}
 \title{Inicia o pareamento determinístico por igualdade exata entre variáveis}
 \usage{
-iniciar_pareamento(df, variables)
+iniciar_pareamento(df, variaveis)
 }
 \arguments{
 \item{df}{Um \code{data.frame} ou \code{tibble} contendo os dados a serem processados.}
 
-\item{variables}{Vetor de caracteres com os nomes das colunas que serão usadas para identificar registros iguais (chaves do pareamento).}
+\item{variaveis}{Vetor de caracteres com os nomes das colunas que serão usadas para identificar registros iguais (chaves do pareamento).}
 }
 \value{
 Um \code{data.frame} contendo as colunas \code{par_1} e \code{par_c1} para os registros que foram agrupados com base nas variáveis especificadas.
@@ -36,6 +36,6 @@ df <- data.frame(
   nascimento = c("2000-01-01", "2000-01-01", "1995-05-05", "1980-10-10", "1980-10-10", "2001-12-12")
 )
 
-resultado <- iniciar_pareamento(df, variables = c("nome", "nascimento"))
+resultado <- iniciar_pareamento(df, variaveis = c("nome", "nascimento"))
 print(resultado)
 }
