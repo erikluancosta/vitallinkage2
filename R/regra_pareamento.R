@@ -1,6 +1,6 @@
 #' Aplica regras de linkage determinístico por similaridade completa entre variáveis
 #'
-#' Esta função identifica grupos de registros em um `data.table` que possuem valores idênticos em um conjunto de variáveis (`variables`), e atribui um identificador de linkage (`par_1_new`) comum para esses grupos.
+#' Esta função identifica grupos de registros em um `data.table` que possuem valores idênticos em um conjunto de variáveis (`variaveis`), e atribui um identificador de linkage (`par_1_new`) comum para esses grupos.
 #' É utilizada em processos de pareamento determinístico, atribuindo o mesmo código para registros com as mesmas informações em variáveis-chave.
 #'
 #' A função:
@@ -11,7 +11,7 @@
 #' - Aplica fechamento transitivo com a função `meio_de_campo_dt`.
 #'
 #' @param df Um `data.table` contendo os dados a serem pareados. Deve conter (ou ser possível adicionar) colunas `par_1`, `par_2` e `par_cX`.
-#' @param variables Vetor de nomes de colunas (caracteres) a serem utilizadas para definir igualdade completa entre registros.
+#' @param variaveis Vetor de nomes de colunas (caracteres) a serem utilizadas para definir igualdade completa entre registros.
 #' @param num_regra Número inteiro indicando o número da regra atual. Usado para nomear dinamicamente a coluna `par_cX` (ex: `par_c1`, `par_c2`, etc).
 #'
 #' @return O mesmo `data.table` com os pares de linkage atualizados: colunas `par_1`, `par_2`, e a nova `par_cX` adicionada/modificada.
@@ -28,14 +28,14 @@
 #'   nascimento = c("2000-01-01", "2000-01-01", "1995-05-05", "1980-10-10", "1980-10-10"),
 #'   par_1 = c(NA_integer_, 1, 2, 3, NA_integer_)
 #' )
-#' regra_pareamento(dt, variables = c("nome", "nascimento"), num_regra = 2)
+#' regra_pareamento(dt, variaveis = c("nome", "nascimento"), num_regra = 2)
 #' print(dt)
-regra_pareamento <- function(df, variables, num_regra) {
+regra_pareamento <- function(df, variaveis, num_regra) {
   tictoc::tic("Executado em")
   data.table::setDT(df)
   if (!".rowid" %in% names(df)) df[, .rowid := .I]   # preserva ordem
 
-  vars <- variables
+  vars <- variaveis
 
   ## 1. candidatos totalmente preenchidos -------------------------------------
   idx_complete <- df[ , which(complete.cases(.SD)), .SDcols = vars]
