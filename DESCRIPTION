@@ -1,9 +1,9 @@
 Package: vitallinkage2
 Title: What the Package Does (One Line, Title Case)
-Version: 1.0.0.0
-Authors@R: 
-    person("Erik", "Santos", , "esantos@vitalstrategies.org", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+Version: 2.0.0.0
+Authors@R: c(
+    person("Erik", "Santos", email="esantos@vitalstrategies.org", role = c("aut", "cre"),
+           comment = c(ORCID = "YOUR-ORCID-ID")))
 Description: Este pacote implementa uma metodologia eficiente para pareamento determinístico de registros (record linkage) baseada em igualdade exata de variáveis-chave. Ele permite identificar grupos de registros potencialmente duplicados ou pertencentes à mesma entidade, aplicando regras de linkage progressivas com fechamento transitivo, reaproveitamento de identificadores existentes e atribuição consistente de códigos de grupo. As funções do pacote são otimizadas com data.table para alto desempenho em grandes volumes de dados e compatíveis com fluxos de trabalho baseados em dplyr. Ideal para projetos que envolvem integração e deduplicação de bases administrativas, censitárias ou, em especial, bases de saúde.
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -12,6 +12,11 @@ RoxygenNote: 7.3.2
 Imports: 
     data.table,
     dplyr,
+    lubridate,
     SoundexBR,
     stringi,
+    stringr,
     tictoc
+Depends: 
+    R (>= 4.0)
+LazyData: true
