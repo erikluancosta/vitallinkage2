@@ -1,12 +1,12 @@
-# 🔗 vitalpair
+# 🔗 vitallinkage2
 
-**vitalpair** é um pacote R voltado para o **pareamento determinístico de registros** (record linkage) utilizando regras baseadas em igualdade exata entre variáveis-chave. 
+**vitallinkage2** é um pacote R voltado para o **pareamento determinístico de registros** (record linkage) utilizando regras baseadas em igualdade exata entre variáveis-chave. 
 Ele é ideal para quem precisa identificar e consolidar registros duplicados ou correspondentes em bases administrativas, censitárias ou, especialmente, bases de saúde, com foco em **desempenho, simplicidade e extensibilidade**.
 
 ## ✨ Motivação
 
 Em bases de dados reais, especialmente grandes conjuntos administrativos ou bases de vigilância epidemiológica, é comum encontrar registros duplicados ou que representam a mesma pessoa/entidade em diferentes sistemas.
-O `vitalpair` fornece ferramentas automatizadas para aplicar **regras de linkage determinístico**, atribuir identificadores de grupo e garantir fechamento transitivo, tudo de forma modular e escalável.
+O `vitallinkage2` fornece ferramentas automatizadas para aplicar **regras de linkage determinístico**, atribuir identificadores de grupo e garantir fechamento transitivo, tudo de forma modular e escalável.
 
 ---
 
@@ -18,8 +18,8 @@ Instale diretamente via GitHub:
 # Instale o pacote devtools se necessário
 install.packages("devtools")
 
-# Instale o vitalpair
-devtools::install_github("erikluancosta/vitalpair")
+# Instale o vitallinkage2
+devtools::install_github("erikluancosta/vitallinkage2")
 ```
 
 ## 🛠️ Funcionalidades principais
