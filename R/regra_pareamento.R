@@ -70,7 +70,7 @@ regra_pareamento <- function(df, variaveis, num_regra) {
   df[flag == TRUE, c(par_c, "par_2") := .(par_1_new, par_1_new)]
 
   ## 6. “meio-de-campo” em-place ---------------------------------------------
-  vitalpair::meio_de_campo(df)
+  vitallinkage2::meio_de_campo(df)
 
   ## 7. limpeza e retorno -----------------------------------------------------
   df[, c("flag", "par_1_new") := NULL]

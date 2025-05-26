@@ -81,7 +81,9 @@ soundex_vars <- function(df, col_name) {
   df <- df |>
     dplyr::relocate(c(col_name1_sound, col_name2_sound, col_name3_sound), .after = col_name3) |>
     dplyr::mutate(!!paste0(col_name, "_sound") := paste0(get(col_name1_sound), get(col_name2_sound), get(col_name3_sound)),
-                  across(contains("_sound"), ~ ifelse(. == "NANANA", NA, .)))
+                  across(contains("_sound"), ~ ifelse(. == "NANANA", NA, .)),
+                  across(contains("_sound"), ~ ifelse(. == "0000", NA, .)))
+
 
 
   return(df)
