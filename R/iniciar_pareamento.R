@@ -28,53 +28,42 @@
 #'
 #' resultado <- iniciar_pareamento(df, variaveis = c("nome", "nascimento"))
 #' print(resultado)
-iniciar_pareamento <- function(df, variaveis) {
-  # Início da contagem do tempo
+iniciar_pareamento_dt <- function(df, variaveis) {
   tictoc::tic("Executado em")
+  setDT(df)
 
-  # Adicionando uma coluna de índice para manter o rastreamento das linhas originais
-  df <- dplyr::mutate(df, original_index = dplyr::row_number())
+  # Adiciona índice auxiliar
+  if (!"original_index" %in% names(df)) {
+    df[, original_index := .I]
+  }
 
-  # Filtrando para registros que não possuem valores NA nas variáveis especificadas
-  df_filtered <- dplyr::filter(df,
-                               stats::complete.cases(
-                                 dplyr::select(df, dplyr::all_of(variaveis))
-                               )
-  )
+  # Inicializa as colunas par_1 e par_c1 como NA
+  if (!"par_1" %in% names(df)) df[, par_1 := NA_integer_]
+  if (!"par_c1" %in% names(df)) df[, par_c1 := NA_integer_]
 
-  # Transformando em data.table para melhor performance
-  df_filtered <- data.table::as.data.table(df_filtered)
+  # Identifica linhas completas nas variáveis-chave
+  idx_complete <- df[, complete.cases(.SD), .SDcols = variaveis]
 
-  # Criando uma nova coluna 'N_par' onde é contado o número de registros iguais baseado nas variáveis
-  df_filtered[, N_par := .N, by = variaveis]
+  if (any(idx_complete)) {
+    # Conta ocorrências
+    df[idx_complete, N_par := .N, by = variaveis]
 
-  # Filtrando os grupos com mais de uma ocorrência
-  df_filtered <- df_filtered[N_par > 1]
+    # Define grupos apenas para os que têm mais de uma ocorrência
+    df[idx_complete & N_par > 1, par_1 := .GRP, by = variaveis]
 
-  # Calculando 'par_1' que é um ID do grupo único para as combinações de variáveis
-  df_filtered[, par_1 := .GRP, by = variaveis]
+    # Normaliza sequência dos IDs
+    unique_groups <- unique(na.omit(df$par_1))
+    if (length(unique_groups)) {
+      df[!is.na(par_1), par_1 := match(par_1, unique_groups)]
+    }
 
-  # Ajustando par_1 para começar de 1 em diante
-  unique_groups <- unique(df_filtered$par_1)
-  df_filtered[, par_1 := match(par_1, unique_groups)]
+    # Copia par_1 em par_c1
+    df[, par_c1 := par_1]
 
-  # Criando 'par_c1' que é simplesmente uma cópia de 'par_1' para manter consistência com a função R
-  df_filtered[, par_c1 := par_1]
+    # Remove auxiliar
+    df[, N_par := NULL]
+  }
 
-  # Convertendo de volta para data.frame e removendo duplicatas
-  df_filtered <- dplyr::distinct(as.data.frame(df_filtered))
-
-  # Mantendo apenas as colunas necessárias para o join, incluindo o índice original
-  df_filtered <- dplyr::select(df_filtered, original_index, par_1, par_c1)
-
-  # Reintegrando os registros filtrados ao DataFrame original usando o índice
-  df <- dplyr::left_join(df, df_filtered, by = "original_index")
-
-  # Removendo a coluna de índice original
-  df <- dplyr::select(df, -original_index, par_1, dplyr::everything())
-
-  # Fim da contagem do tempo
   tictoc::toc()
-
-  return(df)
+  return(df[])
 }

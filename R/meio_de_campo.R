@@ -14,28 +14,41 @@
 #' @export
 #'
 #' @importFrom data.table := .I .N .GRP setDT setorder fcoalesce
-meio_de_campo <- function(dt) {
-  data.table::setDT(dt)
+meio_de_campo <- function(dt, max_iter = 3L) {
+  setDT(dt)
 
-  ## mapa par_2 -> maior par_1 (par_final_temp) -------------------------------
-  map_p2 <- dt[!is.na(par_1) & !is.na(par_2),
-               .(par_final_temp = max(par_1)),
-               by = par_2]
+  for (k in seq_len(max_iter)) {
 
-  ## junta sem reordenar
-  dt[map_p2, on = "par_2", par_final_temp := i.par_final_temp]
+    snap <- dt$par_1                               # 1.  estado antes da volta
 
-  ## coalesce e 1.º fechamento -------------------------------------------------
-  dt[, par_final := fcoalesce(par_final_temp, par_1, par_2)]
+    ## A. par_2 ▸ maior par_1 já conhecido ------------------------------------
+    dt[!is.na(par_1) & !is.na(par_2),
+       par1_max := max(par_1),
+       by = par_2]
 
-  ## fecha transitividade pelo par_1 ------------------------------------------
-  dt[!is.na(par_1),
-     par_final_final := max(par_final),           # usa MAX como original
-     by = par_1]
+    ## B. par_final = coalesce( par1_max , par_1 , par_2 ) --------------------
+    dt[, par_final := fcoalesce(par1_max, par_1, par_2)]
 
-  dt[, par_1 := fcoalesce(par_final_final, par_final)]
+    ## C. coloca par_final onde par_1 ainda é NA ------------------------------
+    dt[is.na(par_1) & !is.na(par_final), par_1 := par_final]
 
-  ## limpa temporários
-  dt[, c("par_final_temp", "par_final", "par_final_final") := NULL]
+    ## D. fecha transitividade (SEM perder códigos) --------------------------
+    dt[!is.na(par_1),
+       par_1 := {
+         m <- max(par_final, na.rm = TRUE)
+         if (is.infinite(m)) .BY$par_1 else m      # se só NA, mantém o antigo
+       },
+       by = .(par_1)]
+
+    ## limpa temporários desta volta
+    dt[, c("par1_max", "par_final") := NULL]
+
+    ## convergiu?
+    if (identical(snap, dt$par_1)) break
+  }
+
+  ## Safety-check final: se ainda restou NA em par_1, usa par_2 (se houver)
+  dt[is.na(par_1) & !is.na(par_2), par_1 := par_2]
+
   invisible(dt)
 }

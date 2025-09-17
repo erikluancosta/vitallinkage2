@@ -30,26 +30,25 @@
 #' )
 #' regra_pareamento(dt, variaveis = c("nome", "nascimento"), num_regra = 2)
 #' print(dt)
-regra_pareamento <- function(df, variaveis, num_regra) {
-  tictoc::tic("Executado em")
-  data.table::setDT(df)
+regra_pareamento <-  function(df, variables, num_regra) {
+  tictoc::tic("Tempo de processamento")
+  setDT(df)
   if (!".rowid" %in% names(df)) df[, .rowid := .I]   # preserva ordem
+  vars <- variables
 
-  vars <- variaveis
-
-  ## 1. candidatos totalmente preenchidos -------------------------------------
-  idx_complete <- df[ , which(complete.cases(.SD)), .SDcols = vars]
+  ## 1. linhas COMPLETAS p/ a regra ------------------------------------------
+  idx_complete <- df[, which(complete.cases(.SD)), .SDcols = vars]
   if (!length(idx_complete)) return(df[order(.rowid)])
 
-  ## 2. grupos com ≥2 ocorrências ---------------------------------------------
+  ## 2. grupos com ≥ 2 ocorrências -------------------------------------------
   grupos <- df[idx_complete, .N, by = vars][N > 1L]
   if (!nrow(grupos)) return(df[order(.rowid)])
 
-  ## 3. marca linhas que entram na regra --------------------------------------
+  ## 3. marca participantes ---------------------------------------------------
   df[, flag := FALSE]
   df[grupos, on = vars, flag := TRUE]
 
-  ## 4. calcula par_1_new (reaproveita MAIOR código, senão cria novo) ---------
+  ## 4. calcula par_1_new -----------------------------------------------------
   max_code <- ifelse(any(!is.na(df$par_1)), max(df$par_1, na.rm = TRUE), 0L)
 
   df[flag == TRUE,
@@ -63,18 +62,23 @@ regra_pareamento <- function(df, variaveis, num_regra) {
      par_1_new := max_code + .GRP,
      by = vars]
 
-  ## 5. cria par_cX e par_2 ----------------------------------------------------
+  ## 5. escreve par_cX e par_2  (AJUSTE AQUI)
   par_c <- paste0("par_c", num_regra)
   if (!par_c %in% names(df)) df[, (par_c) := NA_integer_]
 
-  df[flag == TRUE, c(par_c, "par_2") := .(par_1_new, par_1_new)]
+  cols_to_set <- c(par_c, "par_2")
+  df[flag == TRUE, (cols_to_set) := .(par_1_new, par_1_new)]
 
-  ## 6. “meio-de-campo” em-place ---------------------------------------------
-  vitallinkage2::meio_de_campo(df)
+  ## 6. fechamento transitivo completo ---------------------------------------
+  meio_de_campo(df, max_iter = 3L)
 
-  ## 7. limpeza e retorno -----------------------------------------------------
+  ## 7. limpeza --------------------------------------------------------------
   df[, c("flag", "par_1_new") := NULL]
   setorder(df, .rowid)[, .rowid := NULL]
+
+  ## 8. checagem final -------------------------------------------------------
+  if (all(is.na(df[[par_c]]))) message("Nenhum registro foi pareado")
+
   tictoc::toc()
   return(df[])
 }
