@@ -38,7 +38,7 @@ iniciar_linkage <- function(df, variaveis) {
   # Filtrando para registros que não possuem valores NA nas variáveis especificadas
   df_filtered <- dplyr::filter(df,
                                stats::complete.cases(
-                                 dplyr::select(df, dplyr::all_of(variables))
+                                 dplyr::select(df, dplyr::all_of(variaveis))
                                )
   )
 
@@ -46,13 +46,13 @@ iniciar_linkage <- function(df, variaveis) {
   df_filtered <- data.table::as.data.table(df_filtered)
 
   # Criando uma nova coluna 'N_par' onde é contado o número de registros iguais baseado nas variáveis
-  df_filtered[, N_par := .N, by = variables]
+  df_filtered[, N_par := .N, by = variaveis]
 
   # Filtrando os grupos com mais de uma ocorrência
   df_filtered <- df_filtered[N_par > 1]
 
   # Calculando 'par_1' que é um ID do grupo único para as combinações de variáveis
-  df_filtered[, par_1 := .GRP, by = variables]
+  df_filtered[, par_1 := .GRP, by = variaveis]
 
   # Ajustando par_1 para começar de 1 em diante
   unique_groups <- unique(df_filtered$par_1)
