@@ -23,27 +23,27 @@ devtools::install_github("erikluancosta/vitallinkage2")
 ```
 
 ## 🛠️ Funcionalidades principais
-iniciar_pareamento()
+iniciar_linkage()
 Aplica uma etapa inicial de pareamento determinístico com base em igualdade exata entre variáveis. Retorna um data.frame com identificadores atribuídos (par_1 e par_c1), preservando os registros originais.
 
 ```r
 # aplicação direta do pacote
-df <- iniciar_pareamento(df, variaveis = c("var1", "var2", ...))
+df <- iniciar_linkage(df, variaveis = c("var1", "var2", ...))
 
 # com dplyr
-df <- df %>% iniciar_pareamento(c("var1", "var2", ...))
+df <- df %>% iniciar_linkage(c("var1", "var2", ...))
 
 ```
 
-regra_pareamento()
+regras_linkage()
 Executa regras adicionais de linkage determinístico sobre um data.table, atribuindo identificadores consistentes aos grupos detectados. Pode ser usada em sequência com diferentes regras (par_c2, par_c3, etc.).
 
 ```r
 # aplicação direta do pacote
-df <- regra_pareamento(df, variaveis = c("var1", "var2", ...), num_regra=2)
+df <- regras_linkage(df, variaveis = c("var1", "var2", ...), num_regra=2)
 
 # com dplyr
-df <- df %>% regra_pareamento(c("var1", "var2", ...), 2)
+df <- df %>% regras_linkage(c("var1", "var2", ...), 2)
 ```
 
 meio_de_campo()
