@@ -20,3 +20,5 @@ Imports:
 Depends: 
     R (>= 4.0)
 LazyData: true
+URL: https://github.com/erikluancosta/vitallinkage2
+BugReports: https://github.com/erikluancosta/vitallinkage2/issues
