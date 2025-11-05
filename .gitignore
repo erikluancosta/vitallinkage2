@@ -5,3 +5,7 @@
 data-raw
 teste
 .Renviron
+.Rdata
+.httr-oauth
+.DS_Store
+.quarto
