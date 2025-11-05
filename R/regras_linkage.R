@@ -30,11 +30,11 @@
 #' )
 #' regras_linkage(dt, variaveis = c("nome", "nascimento"), num_regra = 2)
 #' print(dt)
-regras_linkage <-  function(df, variables, num_regra) {
+regras_linkage <-  function(df, variaveis, num_regra) {
   tictoc::tic("Tempo de processamento")
   setDT(df)
   if (!".rowid" %in% names(df)) df[, .rowid := .I]   # preserva ordem
-  vars <- variables
+  vars <- variaveis
 
   ## 1. linhas COMPLETAS p/ a regra ------------------------------------------
   idx_complete <- df[, which(complete.cases(.SD)), .SDcols = vars]
@@ -70,7 +70,7 @@ regras_linkage <-  function(df, variables, num_regra) {
   df[flag == TRUE, (cols_to_set) := .(par_1_new, par_1_new)]
 
   ## 6. fechamento transitivo completo ---------------------------------------
-  meio_de_campo(df, max_iter = 3L)
+  meio_de_campo_dt(df, max_iter = 3L)
 
   ## 7. limpeza --------------------------------------------------------------
   df[, c("flag", "par_1_new") := NULL]
