@@ -8,7 +8,7 @@
 #' - Filtra apenas grupos com pelo menos dois registros idênticos.
 #' - Atribui códigos reaproveitando o maior valor já presente na coluna `par_1`, ou criando novos códigos sequenciais.
 #' - Preenche colunas `par_cX` e `par_2` com os novos códigos atribuídos.
-#' - Aplica fechamento transitivo com a função `meio_de_campo_dt`.
+#' - Aplica fechamento transitivo com a função `meio_de_campo`.
 #'
 #' @param df Um `data.table` contendo os dados a serem pareados. Deve conter (ou ser possível adicionar) colunas `par_1`, `par_2` e `par_cX`.
 #' @param variaveis Vetor de nomes de colunas (caracteres) a serem utilizadas para definir igualdade completa entre registros.
@@ -70,7 +70,7 @@ regras_linkage <-  function(df, variaveis, num_regra) {
   df[flag == TRUE, (cols_to_set) := .(par_1_new, par_1_new)]
 
   ## 6. fechamento transitivo completo ---------------------------------------
-  meio_de_campo_dt(df, max_iter = 3L)
+  meio_de_campo(df, max_iter = 3L)
 
   ## 7. limpeza --------------------------------------------------------------
   df[, c("flag", "par_1_new") := NULL]
